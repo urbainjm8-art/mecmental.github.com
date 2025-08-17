@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Téléchargement - Secrets de la Séduction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .progress-container {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e9ecef;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            z-index: 2;
+            transform: translateY(-50%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .step {
+            background: white;
+            border: 4px solid #e9ecef;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            position: relative;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: #007bff;
+            color: #007bff;
+            transform: scale(1.1);
+        }
+
+        .step.completed {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .step-label {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .form-group input.valid {
+            border-color: #28a745;
+        }
+
+        .form-group input.invalid {
+            border-color: #dc3545;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,123,255,0.3);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .social-step {
+            text-align: center;
+        }
+
+        .facebook-btn {
+            background: #4267B2;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .facebook-btn:hover {
+            background: #365899;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(66,103,178,0.3);
+        }
+
+        .checkbox-group {
+            margin: 20px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .download-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px 40px;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(40,167,69,0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(40,167,69,0.4);
+        }
+
+        .success-icon {
+            font-size: 4em;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .gdpr-notice {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
+            border-left: 4px solid #007bff;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .progress-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .progress-bar::before,
+            .progress-line {
+                display: none;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌹 Secrets de la Séduction</h1>
+            <p>Découvrez les stratégies exclusives et les techniques avancées pour maîtriser l'art de la séduction. Un guide complet qui transformera votre approche relationnelle.</p>
+        </div>
+
+        <div class="progress-container">
+            <h3 style="text-align: center; margin-bottom: 30px; color: #333;">
+                📈 Progression vers le téléchargement
+            </h3>
+            
+            <div class="progress-bar">
+                <div class="progress-line" id="progressLine"></div>
+                <div class="step-item">
+                    <div class="step active" id="step1">1</div>
+                    <div class="step-label">Informations personnelles</div>
+                </div>
+                <div class="step-item">
+                    <div class="step" id="step2">2</div>
+                    <div class="step-label">Abonnement Facebook</div>
+                </div>
+                <div class="step-item">
+                    <div class="step" id="step3">3</div>
+                    <div class="step-label">Téléchargement</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Étape 1: Formulaire -->
+            <div class="step-content active" id="content1">
+                <h2>📝 Étape 1: Vos informations</h2>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="userName">Nom complet *</label>
+                        <input type="text" id="userName" name="userName" required>
+                        <div class="error-message" id="nameError">Veuillez entrer votre nom complet</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userEmail">Adresse e-mail *</label>
+                        <input type="email" id="userEmail" name="userEmail" required>
+                        <div class="error-message" id="emailError">Veuillez entrer une adresse e-mail valide</div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="gdprConsent" required>
+                            J'accepte que mes données soient collectées et traitées conformément au RGPD *
+                        </label>
+                    </div>
+                    
+                    <button type="button" class="btn" id="step1Btn" onclick="validateStep1()">
+                        Continuer vers l'étape 2 →
+                    </button>
+                </form>
+            </div>
+
+            <!-- Étape 2: Réseaux sociaux -->
+            <div class="step-content" id="content2">
+                <div class="social-step">
+                    <h2>📱 Étape 2: Rejoignez notre communauté</h2>
+                    <p>Suivez-nous sur Facebook pour recevoir des conseils exclusifs et des mises à jour régulières.</p>
+                    
+                    <a href="https://www.facebook.com/profile.php?id=100094597473939" 
+                       target="_blank" 
+                       class="facebook-btn"
+                       onclick="trackFacebookClick()">
+                        📘 S'abonner à notre page Facebook
+                    </a>
+                    
+                    <div style="margin: 20px 0;">
+                        <p><em>Cliquez d'abord sur le lien Facebook ci-dessus</em></p>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="facebookConfirm">
+                            Je confirme m'être abonné à votre page Facebook
+                        </label>
+                    </div>
+                    
+                    <button type="button" class="btn" id="step2Btn" onclick="validateStep2()" disabled>
+                        Continuer vers le téléchargement →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Étape 3: Téléchargement -->
+            <div class="step-content" id="content3">
+                <div class="download-section">
+                    <div class="success-icon">🎉</div>
+                    <h2>🎯 Félicitations !</h2>
+                    <p>Vous avez rempli toutes les conditions. Votre téléchargement est maintenant disponible.</p>
+                    
+                    <a href="#" class="download-btn" id="downloadBtn" onclick="startDownload()">
+                        📥 Télécharger "Secrets de la Séduction"
+                    </a>
+                    
+                    <p style="margin-top: 20px; color: #666;">
+                        Merci de votre confiance ! Vous allez recevoir un e-mail de confirmation.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="gdpr-notice">
+            <strong>🔒 Protection des données :</strong> Vos données sont protégées et traitées conformément au RGPD. 
+            Elles ne seront jamais partagées avec des tiers et utilisées uniquement pour vous envoyer le contenu promis 
+            et des mises à jour occasionnelles dont vous pourrez vous désabonner à tout moment.
+            <br><br>
+            <strong>📧 Contact :</strong> mecmental08@gmail.com
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let userDataCollected = false;
+        let facebookSubscribed = false;
+
+        // Validation de l'étape 1
+        function validateStep1() {
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            const gdprConsent = document.getElementById('gdprConsent').checked;
+            
+            let isValid = true;
+            
+            // Validation du nom
+            if (name.length < 2) {
+                showError('nameError', 'Le nom doit contenir au moins 2 caractères');
+                markInvalid('userName');
+                isValid = false;
+            } else {
+                hideError('nameError');
+                markValid('userName');
+            }
+            
+            // Validation de l'email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('emailError', 'Veuillez entrer une adresse e-mail valide');
+                markInvalid('userEmail');
+                isValid = false;
+            } else {
+                hideError('emailError');
+                markValid('userEmail');
+            }
+            
+            // Validation du consentement RGPD
+            if (!gdprConsent) {
+                alert('Vous devez accepter les conditions de traitement des données pour continuer.');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                userDataCollected = true;
+                sendUserData(name, email);
+                goToStep(2);
+            }
+        }
+
+        // Validation de l'étape 2
+        function validateStep2() {
+            const facebookConfirm = document.getElementById('facebookConfirm').checked;
+            
+            if (facebookConfirm) {
+                facebookSubscribed = true;
+                goToStep(3);
+            } else {
+                alert('Veuillez confirmer votre abonnement à notre page Facebook.');
+            }
+        }
+
+        // Suivi du clic Facebook
+        function trackFacebookClick() {
+            setTimeout(() => {
+                document.getElementById('facebookConfirm').disabled = false;
+                document.getElementById('step2Btn').disabled = false;
+            }, 2000);
+        }
+
+        // Navigation entre les étapes
+        function goToStep(stepNumber) {
+            // Masquer le contenu actuel
+            document.querySelector('.step-content.active').classList.remove('active');
+            
+            // Afficher le nouveau contenu
+            document.getElementById(`content${stepNumber}`).classList.add('active');
+            
+            // Mettre à jour les indicateurs de progression
+            updateProgressBar(stepNumber);
+            
+            currentStep = stepNumber;
+        }
+
+        // Mise à jour de la barre de progression
+        function updateProgressBar(stepNumber) {
+            // Réinitialiser tous les steps
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                step.classList.remove('active', 'completed');
+                
+                if (i < stepNumber) {
+                    step.classList.add('completed');
+                    step.innerHTML = '✓';
+                } else if (i === stepNumber) {
+                    step.classList.add('active');
+                    step.innerHTML = i;
+                } else {
+                    step.innerHTML = i;
+                }
+            }
+            
+            // Mettre à jour la ligne de progression
+            const progressLine = document.getElementById('progressLine');
+            const percentage = ((stepNumber - 1) / 2) * 100;
+            progressLine.style.width = percentage + '%';
+        }
+
+        // Fonctions utilitaires pour la validation
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function markValid(inputId) {
+            const input = document.getElementById(inputId);
+            input.classList.remove('invalid');
+            input.classList.add('valid');
+        }
+
+        function markInvalid(inputId) {
+            const input = document.getElementById(inputId);
+            input.classList.remove('valid');
+            input.classList.add('invalid');
+        }
+
+        // Envoi des données utilisateur
+        function sendUserData(name, email) {
+            // Simulation d'envoi d'email (à remplacer par votre service d'email)
+            const emailData = {
+                to: 'mecmental08@gmail.com',
+                subject: 'Nouveau téléchargement - Secrets de la Séduction',
+                body: `
+                    Nouveau utilisateur a téléchargé "Secrets de la Séduction":
+                    
+                    Nom: ${name}
+                    Email: ${email}
+                    Date: ${new Date().toLocaleString('fr-FR')}
+                    Abonnement Facebook: En cours de vérification
+                `
+            };
+            
+            // Ici vous pouvez intégrer votre service d'email préféré
+            // (EmailJS, Formspree, Netlify Forms, etc.)
+            console.log('Données utilisateur envoyées:', emailData);
+        }
+
+        // Démarrage du téléchargement
+        function startDownload() {
+            if (userDataCollected && facebookSubscribed) {
+                // Créer un fichier de démonstration
+                const content = `
+# Secrets de la Séduction
+## Guide Exclusif
+
+Félicitations ! Vous avez accès à ce guide exclusif.
+
+### Sommaire :
+1. Les fondamentaux de la séduction
+2. L'art de la conversation
+3. La confiance en soi
+4. Les signaux non-verbaux
+5. Techniques avancées
+
+### Note importante :
+Ce fichier de démonstration remplace votre fichier "Secrets de la Séduction".
+Pour intégrer votre vrai fichier, remplacez cette fonction par un lien direct 
+vers votre fichier sur votre serveur.
+
+Date de téléchargement: ${new Date().toLocaleString('fr-FR')}
+                `;
+                
+                // Créer et télécharger le fichier
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Secrets_de_la_Seduction.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // Confirmation finale
+                alert('Téléchargement terminé ! Merci de votre confiance. 🎉');
+            } else {
+                alert('Erreur : Toutes les étapes n\'ont pas été complétées.');
+            }
+        }
+
+        // Validation en temps réel des champs
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            const facebookConfirm = document.getElementById('facebookConfirm');
+            
+            userName.addEventListener('input', function() {
+                if (this.value.trim().length >= 2) {
+                    markValid('userName');
+                    hideError('nameError');
+                }
+            });
+            
+            userEmail.addEventListener('input', function() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(this.value.trim())) {
+                    markValid('userEmail');
+                    hideError('emailError');
+                }
+            });
+            
+            facebookConfirm.addEventListener('change', function() {
+                const step2Btn = document.getElementById('step2Btn');
+                step2Btn.disabled = !this.checked;
+            });
+        });
+    </script>
+</body>
+</html>
